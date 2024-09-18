@@ -12,5 +12,9 @@ const gameBoard = (function() {
 
     const getBoard = () => board;
     const showBoard = () => console.log(getBoard());
-    return {getBoard, showBoard}
+    const inputValue = (row, column) => {
+        board[row][column] = "suisei";
+        showBoard();
+    }
+    return {getBoard, showBoard, inputValue}
 })();
