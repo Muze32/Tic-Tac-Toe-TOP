@@ -11,16 +11,12 @@ const gameBoard = (function() {
 
     const getBoard = () => board;
     const showBoard = () => console.log(getBoard());
-    const inputValue = (token) => {
-        let row = prompt("Select a row for the input: ");
-        let column = prompt("Select a column for the input: ");
-        board[row][column] = `${token}`;
-    }
+    const inputValue = (token, row, column) => board[row][column] = `${token}`;
     return {getBoard, inputValue, showBoard}
 })();
 
 
-const gameController = (function () {
+const game = (function () {
     const players = [
         {name: "Player One", token: "X"},
         {name: "Player Two", token: "O"}
@@ -35,11 +31,12 @@ const gameController = (function () {
         console.log(`${getCurrentPlayer().name} turn.`);
         gameBoard.showBoard();
     }
-    const playRound = () => {
-        printNewRound();
-        gameBoard.inputValue(getCurrentPlayer().token);
+    const playRound = (row, column) => {
+        gameBoard.inputValue(getCurrentPlayer().token, row, column);
         switchTurn();
+        printNewRound();
     }
-
+    printNewRound();
+    
     return {playRound, getCurrentPlayer}
 })();
