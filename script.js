@@ -31,12 +31,24 @@ const game = (function () {
         console.log(`${getCurrentPlayer().name} turn.`);
         gameBoard.showBoard();
     }
+    const checkWinner = () => {
+        for (let i = 0; i < 3; i++) {
+            if (gameBoard.getBoard()[0][0] == gameBoard.getBoard()[i][1] == gameBoard.getBoard()[i][2]) {
+                return true;
+            }
+            else if (gameBoard.getBoard()[0][i] == gameBoard.getBoard()[1][i] == gameBoard.getBoard()[2][i]) {
+                return true;
+            }
+
+        }
+    }
     const playRound = (row, column) => {
         gameBoard.inputValue(getCurrentPlayer().token, row, column);
+        console.log(checkWinner());
         switchTurn();
         printNewRound();
     }
     printNewRound();
-    
+
     return {playRound, getCurrentPlayer}
 })();
