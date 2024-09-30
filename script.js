@@ -39,8 +39,16 @@ const game = (function () {
             else if (gameBoard.getBoard()[0][i] == gameBoard.getBoard()[1][i] == gameBoard.getBoard()[2][i]) {
                 return true;
             }
-
         }
+
+        if (gameBoard.getBoard()[0][0] == gameBoard.getBoard()[1][1] == gameBoard.getBoard()[2][2]) {
+            return true;
+        }
+        else if (gameBoard.getBoard()[2][0] == gameBoard.getBoard()[1][1] == gameBoard.getBoard()[0][2]) {
+            return true;
+        }
+        else return false;
+
     }
     const playRound = (row, column) => {
         gameBoard.inputValue(getCurrentPlayer().token, row, column);
