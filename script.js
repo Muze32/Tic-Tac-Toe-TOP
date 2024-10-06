@@ -11,15 +11,16 @@ const Board = (function() {
     const getBoard = () => board;
     const showBoard = () => console.log(board);
     const getCell = (row, column) => board[row][column];
+    const isCellFull  = (row, column) => getCell(row, column) !== " " ;
     const isFull = () => {
         for(let i = 0; i < rows; i++) {
             for (let j = 0; j < columns; j++) {
-                if (getCell(i,j) === " ") return false;
+                if (!isCellFull(i,j)) return false;
             }
         }
         return true;
     }
-    return {getCell, showBoard, isFull, getBoard}
+    return {getCell, showBoard, isFull, getBoard, isCellFull}
 })();
 
 
@@ -37,7 +38,7 @@ const game = (function () {
         Board.showBoard();
     }
     const inputValue = (token, row, column) => {
-        if (Board.getCell(row, column) !== " ") {
+        if (Board.isCellFull(row,column)) {
             console.log("Please enter your token in a empty cell.");
             return false;
         }
@@ -47,15 +48,15 @@ const game = (function () {
 
     const checkWinner = () => {
         for (let i = 0; i < 3; i++) {
-            if (Board.getCell(i,0) !== " " && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) {
+            if (Board.isCellFull(i,0) && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) {
                 return true;
             }
-            else if (Board.getCell(0,i) !== " " && Board.getCell(0,i) === Board.getCell(1,i) === Board.getCell(2,i)) {
+            else if (Board.isCellFull(0,i) && Board.getCell(0,i) === Board.getCell(1,i) === Board.getCell(2,i)) {
                 return true;
             }
         }
 
-        if (Board.getCell(1,1) !== " ") {
+        if (Board.isCellFull(1,1)) {
             if (Board.getCell(0,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(2,2)) {
                 return true;
             }
@@ -71,10 +72,12 @@ const game = (function () {
     
         if (checkWinner()) {
             console.log(`${getCurrentPlayer().name} won. Want to play again?`);
+            Board.showBoard();
             return;
         }
         else if (Board.isFull()) {
-            console.log("Board is full. Do you want to play again?");
+            console.log("Nobody won. Do you want to play again?");
+            Board.showBoard();
             return;
         }
         switchTurn();
