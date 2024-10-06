@@ -1,4 +1,4 @@
-const gameBoard = (function() {
+const Board = (function() {
     const board = [];
     const rows = 3, columns = 3;
 
@@ -12,7 +12,8 @@ const gameBoard = (function() {
     const getBoard = () => board;
     const showBoard = () => console.log(getBoard());
     const inputValue = (token, row, column) => board[row][column] = `${token}`;
-    return {getBoard, inputValue, showBoard}
+    const getCell = (row, column) => getBoard()[row][column];
+    return {getCell, inputValue, showBoard}
 })();
 
 
@@ -28,32 +29,35 @@ const game = (function () {
         currentPlayer = currentPlayer === players [0] ? players[1] : players[0];
     };
     const printNewRound = () => {
-        console.log(`${getCurrentPlayer().name} turn.`);
-        gameBoard.showBoard();
+        console.log(`${getCurrentPlayer().name} turn. [${getCurrentPlayer().token}]`);
+        Board.showBoard();
     }
     const checkWinner = () => {
         for (let i = 0; i < 3; i++) {
-            if (gameBoard.getBoard()[0][0] == gameBoard.getBoard()[i][1] == gameBoard.getBoard()[i][2]) {
+            if (Board.getCell(i,0) !== " " && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) {
                 return true;
             }
-            else if (gameBoard.getBoard()[0][i] == gameBoard.getBoard()[1][i] == gameBoard.getBoard()[2][i]) {
+            else if (Board.getCell(0,i) !== " " && Board.getCell(0,i) === Board.getCell(1,i) === Board.getCell(2,i)) {
                 return true;
             }
         }
 
-        if (gameBoard.getBoard()[0][0] == gameBoard.getBoard()[1][1] == gameBoard.getBoard()[2][2]) {
-            return true;
+        if (Board.getCell(1,1) !== " ") {
+            if (Board.getCell(0,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(2,2)) {
+                return true;
+            }
+            else if (Board.getCell(2,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(0,2)) {
+                return true;
+            }
         }
-        else if (gameBoard.getBoard()[2][0] == gameBoard.getBoard()[1][1] == gameBoard.getBoard()[0][2]) {
-            return true;
-        }
-        else return false;
-
+        return false;   
     }
     const playRound = (row, column) => {
-        gameBoard.inputValue(getCurrentPlayer().token, row, column);
-        console.log(checkWinner());
+        Board.inputValue(getCurrentPlayer().token, row, column);
         switchTurn();
+        if(checkWinner()) {
+            console.log("Someone won");
+        }
         printNewRound();
     }
     printNewRound();
