@@ -9,11 +9,24 @@ const Board = (function() {
         }
     }
 
-    const getBoard = () => board;
-    const showBoard = () => console.log(getBoard());
-    const inputValue = (token, row, column) => board[row][column] = `${token}`;
-    const getCell = (row, column) => getBoard()[row][column];
-    return {getCell, inputValue, showBoard}
+    const showBoard = () => console.log(board);
+    const inputValue = (token, row, column) => {
+        if (board[row][column] !== " ") {
+            console.log("Please enter your token in a empty cell.");
+            return;
+        }
+        board[row][column] = `${token}`;
+    }
+    const getCell = (row, column) => board[row][column];
+    const isFull = ()  => {
+        for(let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                if (getCell(i,j) === " ") return false;
+            }
+        }
+        return true;
+    }
+    return {getCell, inputValue, showBoard, isFull}
 })();
 
 
@@ -25,9 +38,7 @@ const game = (function () {
     let currentPlayer = players[0];
 
     const getCurrentPlayer = () => currentPlayer;
-    const switchTurn = () => {
-        currentPlayer = currentPlayer === players [0] ? players[1] : players[0];
-    };
+    const switchTurn = () => currentPlayer = currentPlayer === players [0] ? players[1] : players[0];
     const printNewRound = () => {
         console.log(`${getCurrentPlayer().name} turn. [${getCurrentPlayer().token}]`);
         Board.showBoard();
@@ -54,13 +65,18 @@ const game = (function () {
     }
     const playRound = (row, column) => {
         Board.inputValue(getCurrentPlayer().token, row, column);
-        switchTurn();
-        if(checkWinner()) {
-            console.log("Someone won");
+        if (checkWinner()) {
+            console.log(`${getCurrentPlayer().name} won. Want to play again?`);
+            return;
         }
+        else if (Board.isFull()) {
+            console.log("Board is full. Do you want to play again?");
+            return;
+        }
+        switchTurn();
         printNewRound();
     }
     printNewRound();
 
-    return {playRound, getCurrentPlayer}
+    return {playRound}
 })();
