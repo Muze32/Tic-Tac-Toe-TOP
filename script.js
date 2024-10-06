@@ -8,17 +8,8 @@ const Board = (function() {
             board[i].push(" ");
         }
     }
-
+    const getBoard = () => board;
     const showBoard = () => console.log(board);
-    const inputValue = (token, row, column) => {
-        if (board[row][column] !== " ") {
-            console.log("Please enter your token in a empty cell.");
-            return false;
-        }
-        board[row][column] = `${token}`;
-        return true;
-    }
-    
     const getCell = (row, column) => board[row][column];
     const isFull = () => {
         for(let i = 0; i < rows; i++) {
@@ -28,7 +19,7 @@ const Board = (function() {
         }
         return true;
     }
-    return {getCell, inputValue, showBoard, isFull}
+    return {getCell, showBoard, isFull, getBoard}
 })();
 
 
@@ -44,6 +35,14 @@ const game = (function () {
     const printNewRound = () => {
         console.log(`${getCurrentPlayer().name} turn. [${getCurrentPlayer().token}]`);
         Board.showBoard();
+    }
+    const inputValue = (token, row, column) => {
+        if (Board.getCell(row, column) !== " ") {
+            console.log("Please enter your token in a empty cell.");
+            return false;
+        }
+        Board.getBoard()[row][column] = `${token}`;
+        return true;
     }
 
     const checkWinner = () => {
@@ -68,7 +67,7 @@ const game = (function () {
     }
 
     const playRound = (row, column) => {
-        if(!Board.inputValue(getCurrentPlayer().token, row, column)) return;
+        if(!inputValue(getCurrentPlayer().token, row, column)) return;
     
         if (checkWinner()) {
             console.log(`${getCurrentPlayer().name} won. Want to play again?`);
