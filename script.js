@@ -13,12 +13,14 @@ const Board = (function() {
     const inputValue = (token, row, column) => {
         if (board[row][column] !== " ") {
             console.log("Please enter your token in a empty cell.");
-            return;
+            return false;
         }
         board[row][column] = `${token}`;
+        return true;
     }
+    
     const getCell = (row, column) => board[row][column];
-    const isFull = ()  => {
+    const isFull = () => {
         for(let i = 0; i < rows; i++) {
             for (let j = 0; j < columns; j++) {
                 if (getCell(i,j) === " ") return false;
@@ -43,6 +45,7 @@ const game = (function () {
         console.log(`${getCurrentPlayer().name} turn. [${getCurrentPlayer().token}]`);
         Board.showBoard();
     }
+
     const checkWinner = () => {
         for (let i = 0; i < 3; i++) {
             if (Board.getCell(i,0) !== " " && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) {
@@ -63,8 +66,10 @@ const game = (function () {
         }
         return false;   
     }
+
     const playRound = (row, column) => {
-        Board.inputValue(getCurrentPlayer().token, row, column);
+        if(!Board.inputValue(getCurrentPlayer().token, row, column)) return;
+    
         if (checkWinner()) {
             console.log(`${getCurrentPlayer().name} won. Want to play again?`);
             return;
