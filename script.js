@@ -2,7 +2,7 @@ const Board = (function() {
     const board = [];
     const rows = 3, cols = 3;
 
-    for(let i = 0; i < rows; i++) {
+    for(let i = 0; i < rows; i++) { //Creates board
         board[i] = [];
         for (let j = 0; j < cols; j++) {
             board[i].push(" ");
@@ -71,6 +71,7 @@ const game = (function () {
             case "y":
                 Board.clearBoard();
                 switchTurn();
+                winMessage = "";
                 printNewRound();
                 break;
             case "n":
@@ -83,7 +84,7 @@ const game = (function () {
     }
     
     const checkWinner = () => {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) { //Check rows and cols
             if (Board.isCellFull(i,0) && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) return true;
             else if (Board.isCellFull(0,i) && Board.getCell(0,i) === Board.getCell(1,i) && Board.getCell(1,i) === Board.getCell(2,i)) return true;
         }
@@ -95,8 +96,10 @@ const game = (function () {
     }
 
     const playRound = (row, col) => { //Main function
-        if(!inputValue(getCurrentPlayer().token, row, col)) return; //If the user tries to input a value in a empty cell thros a error message
-        
+
+        //If the user tries to input a value in a empty cell thros a error message
+        if(!inputValue(getCurrentPlayer().token, row, col)) return; 
+
         if(checkWinner() || Board.isFull()) { 
             handleEndGame();
             return;
@@ -109,9 +112,9 @@ const game = (function () {
 })();
 
 const screenController = (function () {
-    const divTurn = document.querySelector("#turn");
+    const divTurn = document.querySelector(".turn");
     const divBoard = document.querySelector("#board");
-    const winDiv = document.querySelector("#win");
+    const winDiv = document.querySelector(".win");
 
     const clickHandlerBoard = (e) => {
         let row = e.target.getAttribute("row");
@@ -123,7 +126,8 @@ const screenController = (function () {
     const updateDivBoard = () => {
         let board = Board.getBoard();
         board.forEach((row, r) => {
-            const divRow = document.createElement("div"); 
+            const divRow = document.createElement("div");
+            divRow.classList.add("row"); 
             row.forEach((col, c) => {      
                 const divCol = document.createElement("button");
                 //Add atribbutes to button for styling and targetting purposes

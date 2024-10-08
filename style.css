@@ -1,3 +1,47 @@
+:root {
+    --main-color:black;
+    font-size: 10px;
+}
+
+/****************MAIN BOARD*****************/
+
 .cell {
-    padding: 10px;
+    font-size: 8rem;
+    background: none;
+    min-width: 12rem; 
+    min-height: 12rem; 
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.row:first-child .cell {
+    border-top: none;
+}
+
+.row:last-child .cell {
+    border-bottom: none;
+}
+
+.cell[col="0"] {
+    border-left: none;
+}
+.cell[col="2"] {
+    border-right: none;
+}
+
+/*********TURN SECTION***********/
+
+.turn, .win {
+    font-size: 4rem;
 }
