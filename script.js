@@ -92,7 +92,7 @@ const game = (function () {
     }
 
     const playRound = (row, col) => { //Main function
-        if(!inputValue(getCurrentPlayer().token, row, col)) return; //If user tries to input a value in a empty cell thros a error message
+        if(!inputValue(getCurrentPlayer().token, row, col)) return; //If the user tries to input a value in a empty cell thros a error message
         
         if(checkWinner() || Board.isFull()) { 
             handleEndGame();
@@ -108,35 +108,36 @@ const game = (function () {
 const screenController = (function () {
     const divTurn = document.querySelector("#turn");
     const divBoard = document.querySelector("#board");
+    const winDiv = document.querySelector("#win");
 
     const clickHandlerBoard = (e) => {
         let row = e.target.getAttribute("row");
         let col = e.target.getAttribute("col");
         game.playRound(row, col);
-        e.target.textContent = game.getCurrentPlayer().token;
         updateScreen();
     }
 
-    const updateScreen = () => {
-        divBoard.textContent = "";
+    const updateDivBoard = () => {
         let board = Board.getBoard();
-        let currentPlayer = game.getCurrentPlayer().name;
-
-        divTurn.textContent = `${currentPlayer} turn.`;
-
         board.forEach((row, r) => {
             const divRow = document.createElement("div"); 
             row.forEach((col, c) => {      
                 const divCol = document.createElement("button");
                 divCol.setAttribute("row", r);
                 divCol.setAttribute("col", c);
-                //divCol.textContent = Board.getCell(r, c);
+                divCol.textContent = Board.getCell(r, c);
                 divCol.addEventListener("click", (e) => clickHandlerBoard(e));
                 divRow.appendChild(divCol);
             });
             divBoard.appendChild(divRow);
         }); 
     }
+
+    const updateScreen = () => {
+        divBoard.textContent = "";
+        let currentPlayer = game.getCurrentPlayer().name;
+        divTurn.textContent = `${currentPlayer} turn.`;
+        updateDivBoard();
+    }
     updateScreen();
-    return {updateScreen}
 })();
