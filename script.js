@@ -38,7 +38,9 @@ const game = (function () {
         {name: "Player Two", token: "O"}
     ]
     let currentPlayer = players[0];
+    let winMessage = "";
 
+    const getWinMessage = () => winMessage;
     const getCurrentPlayer = () => currentPlayer;
     const switchTurn = () => currentPlayer = currentPlayer === players [0] ? players[1] : players[0];
     const printNewRound = () => {
@@ -56,11 +58,12 @@ const game = (function () {
 
     const handleEndGame = () => {
         if (checkWinner()) {
-            console.log(`${getCurrentPlayer().name} won.`);
+            winMessage = `${getCurrentPlayer().name} won.`
         }
         else if (Board.isFull()) {
-            console.log("Nobody won.");
+            winMessage = "Nobody won."
         }
+        console.log(winMessage);
         Board.showBoard();
 
         let choice = prompt("Do you want to play again? Yes[Y] No[N]").toLowerCase();
@@ -82,7 +85,7 @@ const game = (function () {
     const checkWinner = () => {
         for (let i = 0; i < 3; i++) {
             if (Board.isCellFull(i,0) && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) return true;
-            else if (Board.isCellFull(0,i) && Board.getCell(0,i) === Board.getCell(1,i) === Board.getCell(2,i)) return true;
+            else if (Board.isCellFull(0,i) && Board.getCell(0,i) === Board.getCell(1,i) && Board.getCell(1,i) === Board.getCell(2,i)) return true;
         }
         if (Board.isCellFull(1,1)) { //Check diagonals
             if (Board.getCell(0,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(2,2)) return true;
@@ -102,7 +105,7 @@ const game = (function () {
         printNewRound();
     }
     printNewRound();
-    return {playRound, getCurrentPlayer}
+    return {playRound, getCurrentPlayer, getWinMessage}
 })();
 
 const screenController = (function () {
@@ -123,8 +126,10 @@ const screenController = (function () {
             const divRow = document.createElement("div"); 
             row.forEach((col, c) => {      
                 const divCol = document.createElement("button");
+                //Add atribbutes to button for styling and targetting purposes
                 divCol.setAttribute("row", r);
                 divCol.setAttribute("col", c);
+                divCol.classList.add("cell");
                 divCol.textContent = Board.getCell(r, c);
                 divCol.addEventListener("click", (e) => clickHandlerBoard(e));
                 divRow.appendChild(divCol);
@@ -138,6 +143,7 @@ const screenController = (function () {
         let currentPlayer = game.getCurrentPlayer().name;
         divTurn.textContent = `${currentPlayer} turn.`;
         updateDivBoard();
+        winDiv.textContent = game.getWinMessage();
     }
     updateScreen();
 })();
