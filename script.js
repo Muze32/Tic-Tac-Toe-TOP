@@ -102,5 +102,41 @@ const game = (function () {
         printNewRound();
     }
     printNewRound();
-    return {playRound}
+    return {playRound, getCurrentPlayer}
+})();
+
+const screenController = (function () {
+    const divTurn = document.querySelector("#turn");
+    const divBoard = document.querySelector("#board");
+
+    const clickHandlerBoard = (e) => {
+        let row = e.target.getAttribute("row");
+        let col = e.target.getAttribute("col");
+        game.playRound(row, col);
+        e.target.textContent = game.getCurrentPlayer().token;
+        updateScreen();
+    }
+
+    const updateScreen = () => {
+        divBoard.textContent = "";
+        let board = Board.getBoard();
+        let currentPlayer = game.getCurrentPlayer().name;
+
+        divTurn.textContent = `${currentPlayer} turn.`;
+
+        board.forEach((row, r) => {
+            const divRow = document.createElement("div"); 
+            row.forEach((col, c) => {      
+                const divCol = document.createElement("button");
+                divCol.setAttribute("row", r);
+                divCol.setAttribute("col", c);
+                //divCol.textContent = Board.getCell(r, c);
+                divCol.addEventListener("click", (e) => clickHandlerBoard(e));
+                divRow.appendChild(divCol);
+            });
+            divBoard.appendChild(divRow);
+        }); 
+    }
+    updateScreen();
+    return {updateScreen}
 })();
