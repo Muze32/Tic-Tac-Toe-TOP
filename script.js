@@ -1,26 +1,34 @@
 const Board = (function() {
     const board = [];
-    const rows = 3, columns = 3;
+    const rows = 3, cols = 3;
 
     for(let i = 0; i < rows; i++) {
         board[i] = [];
-        for (let j = 0; j < columns; j++) {
+        for (let j = 0; j < cols; j++) {
             board[i].push(" ");
         }
     }
     const getBoard = () => board;
-    const showBoard = () => console.log(board);
-    const getCell = (row, column) => board[row][column];
-    const isCellFull  = (row, column) => getCell(row, column) !== " " ;
+    const clearBoard = () => {
+        for(let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                setCell(i, j, " ");
+            }
+        }
+    }
+    const showBoard = () => console.table(board);
+    const setCell = (row, col, value) => board[row][col] = value; 
+    const getCell = (row, col) => board[row][col];
+    const isCellFull  = (row, col) => getCell(row, col) !== " " ;
     const isFull = () => {
         for(let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
+            for (let j = 0; j < cols; j++) {
                 if (!isCellFull(i,j)) return false;
             }
         }
         return true;
     }
-    return {getCell, showBoard, isFull, getBoard, isCellFull}
+    return {getBoard, getCell, setCell, showBoard, isFull, isCellFull, clearBoard}
 })();
 
 
@@ -37,53 +45,62 @@ const game = (function () {
         console.log(`${getCurrentPlayer().name} turn. [${getCurrentPlayer().token}]`);
         Board.showBoard();
     }
-    const inputValue = (token, row, column) => {
-        if (Board.isCellFull(row,column)) {
+    const inputValue = (token, row, col) => {
+        if (Board.isCellFull(row,col)) {
             console.log("Please enter your token in a empty cell.");
             return false;
         }
-        Board.getBoard()[row][column] = `${token}`;
+        Board.setCell(row, col, token);
         return true;
     }
 
+    const handleEndGame = () => {
+        if (checkWinner()) {
+            console.log(`${getCurrentPlayer().name} won.`);
+        }
+        else if (Board.isFull()) {
+            console.log("Nobody won.");
+        }
+        Board.showBoard();
+
+        let choice = prompt("Do you want to play again? Yes[Y] No[N]").toLowerCase();
+        switch (choice) {
+            case "y":
+                Board.clearBoard();
+                switchTurn();
+                printNewRound();
+                break;
+            case "n":
+                alert("Thank you for playing.");
+                break;
+            default: 
+                console.log("Invalid option");
+                break;
+        }
+    }
+    
     const checkWinner = () => {
         for (let i = 0; i < 3; i++) {
-            if (Board.isCellFull(i,0) && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) {
-                return true;
-            }
-            else if (Board.isCellFull(0,i) && Board.getCell(0,i) === Board.getCell(1,i) === Board.getCell(2,i)) {
-                return true;
-            }
+            if (Board.isCellFull(i,0) && Board.getCell(i,0) === Board.getCell(i,1) && Board.getCell(i,1) === Board.getCell(i,2)) return true;
+            else if (Board.isCellFull(0,i) && Board.getCell(0,i) === Board.getCell(1,i) === Board.getCell(2,i)) return true;
         }
-
-        if (Board.isCellFull(1,1)) {
-            if (Board.getCell(0,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(2,2)) {
-                return true;
-            }
-            else if (Board.getCell(2,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(0,2)) {
-                return true;
-            }
+        if (Board.isCellFull(1,1)) { //Check diagonals
+            if (Board.getCell(0,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(2,2)) return true;
+            else if (Board.getCell(2,0) === Board.getCell(1,1) && Board.getCell(1,1) === Board.getCell(0,2)) return true;
         }
         return false;   
     }
 
-    const playRound = (row, column) => {
-        if(!inputValue(getCurrentPlayer().token, row, column)) return;
-    
-        if (checkWinner()) {
-            console.log(`${getCurrentPlayer().name} won. Want to play again?`);
-            Board.showBoard();
-            return;
-        }
-        else if (Board.isFull()) {
-            console.log("Nobody won. Do you want to play again?");
-            Board.showBoard();
+    const playRound = (row, col) => { //Main function
+        if(!inputValue(getCurrentPlayer().token, row, col)) return; //If user tries to input a value in a empty cell thros a error message
+        
+        if(checkWinner() || Board.isFull()) { 
+            handleEndGame();
             return;
         }
         switchTurn();
         printNewRound();
     }
     printNewRound();
-
     return {playRound}
 })();
