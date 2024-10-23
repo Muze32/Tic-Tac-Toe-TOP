@@ -69,10 +69,7 @@ const game = (function () {
         let choice = prompt("Do you want to play again? Yes[Y] No[N]").toLowerCase();
         switch (choice) {
             case "y":
-                Board.clearBoard();
-                switchTurn();
-                winMessage = "";
-                printNewRound();
+                reset();
                 break;
             case "n":
                 alert("Thank you for playing.");
@@ -107,20 +104,34 @@ const game = (function () {
         switchTurn();
         printNewRound();
     }
+
+    const reset = () => {
+        Board.clearBoard();
+        switchTurn();
+        winMessage = "";
+        printNewRound();
+    }
     printNewRound();
-    return {playRound, getCurrentPlayer, getWinMessage}
+    return {playRound, getCurrentPlayer, getWinMessage, reset}
 })();
 
 const screenController = (function () {
     const divTurn = document.querySelector(".turn");
     const divBoard = document.querySelector("#board");
     const winDiv = document.querySelector(".win");
-
+    const resetBtn = document.querySelector(".reset");
+    
     const clickHandlerBoard = (e) => {
         let row = e.target.getAttribute("row");
         let col = e.target.getAttribute("col");
         game.playRound(row, col);
         updateScreen();
+    }
+
+    const resetHandlerBoard = () => {
+        game.reset();
+        updateScreen();
+        console.log("hoshimachi suisei");
     }
 
     const updateDivBoard = () => {
@@ -150,4 +161,5 @@ const screenController = (function () {
         winDiv.textContent = game.getWinMessage();
     }
     updateScreen();
+    resetBtn.addEventListener("click", resetHandlerBoard);
 })();
