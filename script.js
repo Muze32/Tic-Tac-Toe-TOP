@@ -94,13 +94,19 @@ const game = (function () {
 
     const playRound = (row, col) => { //Main function
 
-        //If the user tries to input a value in a empty cell thros a error message
+        //If the user tries to input a value in a empty cell throws a error message
+        if(checkWinner() || Board.isFull()) { 
+            handleEndGame();
+            return;
+        }
+
         if(!inputValue(getCurrentPlayer().token, row, col)) return; 
 
         if(checkWinner() || Board.isFull()) { 
             handleEndGame();
             return;
         }
+
         switchTurn();
         printNewRound();
     }
