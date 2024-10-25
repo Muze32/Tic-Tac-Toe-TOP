@@ -18,11 +18,22 @@
     align-items: center;
 }
 
-.container {
+body > div {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.container {
+    flex-direction: column;
+}
+
+.nameDiv {
+    gap: 3rem;
+}
+
+.reset {
+    margin: 3rem 0;
 }
 
 .row:first-child .cell {

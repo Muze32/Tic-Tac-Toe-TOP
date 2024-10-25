@@ -111,8 +111,14 @@ const game = (function () {
         winMessage = "";
         printNewRound();
     }
+
+    const changeName = (newName1, newName2) => {
+        players[0].name = newName1 || players[0].name;
+        players[1].name = newName2 || players[1].name;
+    }
+
     printNewRound();
-    return {playRound, getCurrentPlayer, getWinMessage, reset}
+    return {playRound, getCurrentPlayer, getWinMessage, reset, changeName}
 })();
 
 const screenController = (function () {
@@ -120,7 +126,10 @@ const screenController = (function () {
     const divBoard = document.querySelector("#board");
     const winDiv = document.querySelector(".win");
     const resetBtn = document.querySelector(".reset");
-    
+    const namePlayer1 = document.querySelector("#name1");
+    const namePlayer2 = document.querySelector("#name2");
+    const submitBtn = document.querySelector("#submitbtn");
+
     const clickHandlerBoard = (e) => {
         let row = e.target.getAttribute("row");
         let col = e.target.getAttribute("col");
@@ -128,10 +137,16 @@ const screenController = (function () {
         updateScreen();
     }
 
-    const resetHandlerBoard = () => {
+    const resetGame = () => {
         game.reset();
         updateScreen();
-        console.log("hoshimachi suisei");
+    }
+
+    const updateNames = () => {
+        game.changeName(namePlayer1.value, namePlayer2.value);
+        namePlayer1.value = "";
+        namePlayer2.value = "";
+        updateScreen();
     }
 
     const updateDivBoard = () => {
@@ -161,5 +176,6 @@ const screenController = (function () {
         winDiv.textContent = game.getWinMessage();
     }
     updateScreen();
-    resetBtn.addEventListener("click", resetHandlerBoard);
+    resetBtn.addEventListener("click", resetGame);
+    submitBtn.addEventListener("click", updateNames);
 })();
